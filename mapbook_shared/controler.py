@@ -11,7 +11,7 @@ def remove_user(user_list:list) -> None:
     name_of_user_to_remove: str = input("Podaj imię użytkownika do usunięcia: ")
     for user in user_list:
         if user['name'] == name_of_user_to_remove:
-            user_list.remove({'name':'Emil', 'location':'Lomża', 'posts':50})
+            user_list.remove({'name':'Natalia', 'location':'Białystok', 'posts':10})
 
 def update_user(user_list:list) -> None:
     name_of_user_to_update: str = input("Podaj imię użytkownika do edycji: ")
