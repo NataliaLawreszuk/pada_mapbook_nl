@@ -1,3 +1,5 @@
+import folium
+
 def show_users(user_list:list) -> None:
     for user in user_list:
         print(f'Twój znajomy {user["name"]} z miejscowości {user["location"]} opublikował {user["posts"]} postów')
@@ -18,3 +20,31 @@ def update_user(user_list:list) -> None:
             user['name'] = input("Podaj nowe imię użytkownika: ")
             user['location'] = input("Podaj nową lokalizację użytkownika: ")
             user['post'] = int(input("Podaj nową liczbę postów użytkownika: "))
+
+def get_coordinates(city:str) -> list:
+
+    import requests
+    from bs4 import BeautifulSoup
+
+    URL=f'https://pl.wikipedia.org/wiki/{city}'
+
+    response = requests.get(URL, headers={'User-Agent': 'Mozilla/5.0'})
+    response_html = BeautifulSoup(response.content, 'html.parser')
+
+    latitude = float(response_html.select('.latitude')[1].text.replace(',','.'))
+    longitude = float(response_html.select('.longitude')[1].text.replace(',','.'))
+
+    return [latitude, longitude]
+
+def get_map(user_list:list) -> None:
+    m = folium.Map(location=(53.23, 23.00), zoom_start=5)
+
+    for user in user_list:
+        folium.Marker(
+            location=get_coordinates(user['location']),
+            tooltip="Click me!",
+            popup=f'{user["name"]}, {user["location"]}',
+            icon=folium.Icon(icon="cloud"),
+        ).add_to(m)
+
+    m.save("index.html")
