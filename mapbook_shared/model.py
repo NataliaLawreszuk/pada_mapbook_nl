@@ -1,5 +1,6 @@
 users:list = [
-    {'name':'Natalia', 'location':'Białystok', 'posts':10}
+    {'name':'Natalia', 'location':'Białystok', 'posts':10},
+    {'name':'Bartosz K', 'location':'Narol', 'posts':67},
 ]
 #TODO w tym miejscu ma zostać commitami dodany przez zaproszonych użytkowników wpis do każdego z nich
 
