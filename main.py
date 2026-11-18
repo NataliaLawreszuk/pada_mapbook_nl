@@ -1,21 +1,66 @@
 from tkinter import *
 import tkintermapview
+from mapbook_shared.controler import get_coordinates
 
-# def oczywiscie_ze_tak():
-#     print('oczywiscie ze tak')
-#
+users: list = []
+
+def add_user():
+    name = entry_name.get()
+    location = entry_location.get()
+    posts = entry_posts.get()
+
+    x, y = get_coordinates(location)
+    map_widget.set_marker(x, y, text=name)
+
+    users.append({'name':name, 'location':location,'posts':posts, 'marker':map_widget.set_marker(x, y, text=name)})
+    print('to jest lista', users)
+
+    entry_name.delete(0, 'end')
+    entry_location.delete(0, 'end')
+    entry_posts.delete(0, 'end')
+    entry_name.focus()
+    show_users()
+
+def show_users():
+    listbox_lista_obiektow.delete(0, 'end')
+    for idx, user in enumerate(users):
+        listbox_lista_obiektow.insert(idx, user['name'])
+
+def remove_user():
+    i = listbox_lista_obiektow.index(ACTIVE)
+    print(i)
+    users.pop(i)
+    show_users()
+
+def edit_user():
+    i = listbox_lista_obiektow.index(ACTIVE)
+    entry_name.insert(0, users[i]['name'])
+    entry_location.insert(0, users[i]['location'])
+    entry_posts.insert(0, users[i]['posts'])
+    button_dodaj_obiekt.config(text= 'Zapisz zmiany', command = lambda:update_user(i))
+
+def update_user(i):
+    new_name = entry_name.get()
+    new_location = entry_location.get()
+    new_posts = entry_posts.get()
+    users[i]['name'] = new_name
+    users[i]['location'] = new_location
+    users[i]['posts'] = new_posts
+    x,y = get_coordinates(new_location)
+    users[i]['marker'].delete()
+    users[i]['marker'] = map_widget.set_marker(x,y, text = entry_name.get())
+
+
+    show_users()
+    button_dodaj_obiekt.config(text= 'Dodaj obiekt', command = add_user)
+    entry_name.delete(0, 'end')
+    entry_location.delete(0, 'end')
+    entry_posts.delete(0, 'end')
+    entry_name.focus()
+
 root = Tk()
 root.geometry('1024x768')
 root.title('Mapbook')
-#
-# label = Label(root, text='Czy geoinformatyka rządzi?')
-# label.grid(row=0, column=0)
-#
-# guzik_tak = Button(root, text='tak', command=oczywiscie_ze_tak)
-# guzik_tak.grid(row=1, column=0)
-#
-# guzik_nie = Button(root, text='nie')
-# guzik_nie.grid(row=1, column=1)
 
 #RAMKI
 ramka_lista_obiektow = Frame(root)
@@ -33,14 +78,14 @@ label_lista_obiektow = Label(ramka_lista_obiektow, text='Lista obiektow:')
 listbox_lista_obiektow = Listbox(ramka_lista_obiektow)
 
 button_pokaz_szczegoly = Button(ramka_lista_obiektow, text= 'Pokaż szczegóły')
-button_edytuj_obiekt = Button(ramka_lista_obiektow, text='Edytuj obiekt')
-button_usun_obiekt = Button(ramka_lista_obiektow, text='Usun obiekt')
+button_edytuj_obiekt = Button(ramka_lista_obiektow, text='Edytuj obiekt', command=edit_user)
+button_usun_obiekt = Button(ramka_lista_obiektow, text='Usun obiekt', command=remove_user)
 #button_dodaj_obiekt = Button(ramka_lista_obiektow, text='Dodaj obiekt')
 
 label_lista_obiektow.grid(row=0, column=0)
 listbox_lista_obiektow.grid(row=1, column=0)
 button_pokaz_szczegoly.grid(row=2, column=0)
-button_edytuj_obiekt.grid(row=2, column=1)
+button_edytuj_obiekt.grid(row=2, column=1,)
 button_usun_obiekt.grid(row=2, column=2)
 
 #RAMKA FORMULARZ
@@ -51,7 +96,7 @@ label_posts = Label(ramka_formularz, text='Postów:')
 entry_name = Entry(ramka_formularz)
 entry_location = Entry(ramka_formularz)
 entry_posts = Entry(ramka_formularz)
-button_dodaj_obiekt = Button(ramka_formularz, text='Dodaj obiekt')
+button_dodaj_obiekt = Button(ramka_formularz, text='Dodaj obiekt', command=add_user)
 
 label_formularz.grid(row=0, column=0)
 label_name.grid(row=1, column=0)
