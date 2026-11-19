@@ -12,7 +12,9 @@ def add_user():
     x, y = get_coordinates(location)
     map_widget.set_marker(x, y, text=name)
 
-    users.append({'name':name, 'location':location,'posts':posts, 'marker':map_widget.set_marker(x, y, text=name)})
+    users.append(
+        {'name':name, 'location':location,'posts':posts, 'marker':map_widget.set_marker(x, y, text=name), 'x':x,
+         'y':y})
     print('to jest lista', users)
 
     entry_name.delete(0, 'end')
@@ -29,6 +31,7 @@ def show_users():
 def remove_user():
     i = listbox_lista_obiektow.index(ACTIVE)
     print(i)
+    users[i]['marker'].delete()
     users.pop(i)
     show_users()
 
@@ -58,6 +61,20 @@ def update_user(i):
     entry_posts.delete(0, 'end')
     entry_name.focus()
 
+def show_user_details():
+    i = listbox_lista_obiektow.index(ACTIVE)
+    tmp_user = users[i]['name']
+    tmp_location = users[i]['location']
+    tmp_posts = users[i]['posts']
+    label_name_szczegoly_obiektu_wartosc.configure(text=tmp_user)
+    label_location_szczegoly_obiektu_wartosc.config(text=tmp_location)
+    label_posts_szczegoly_obiektu_wartosc.config(text=tmp_posts)
+
+    map_widget.set_marker(users[i]['x'],users[i]['y'])
+    map_widget.set_zoom(11)
+
+
+
 root = Tk()
 root.geometry('1024x768')
 root.title('Mapbook')
@@ -77,7 +94,7 @@ ramka_mapa.grid(row=2, column=0, columnspan=7)
 label_lista_obiektow = Label(ramka_lista_obiektow, text='Lista obiektow:')
 listbox_lista_obiektow = Listbox(ramka_lista_obiektow)
 
-button_pokaz_szczegoly = Button(ramka_lista_obiektow, text= 'Pokaż szczegóły')
+button_pokaz_szczegoly = Button(ramka_lista_obiektow, text= 'Pokaż szczegóły', command = show_user_details)
 button_edytuj_obiekt = Button(ramka_lista_obiektow, text='Edytuj obiekt', command=edit_user)
 button_usun_obiekt = Button(ramka_lista_obiektow, text='Usun obiekt', command=remove_user)
 #button_dodaj_obiekt = Button(ramka_lista_obiektow, text='Dodaj obiekt')
